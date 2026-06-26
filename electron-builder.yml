@@ -1,5 +1,5 @@
-appId: com.todolist.stickyapp
-productName: 便签TodoList
+appId: com.jagger555.liquid-glass-todolist-ticket
+productName: Liquid Glass TodoList Ticket
 directories:
   buildResources: build
   output: build-output
@@ -13,7 +13,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: StickyTodoList
+  executableName: LiquidGlassTodoList
   sign: false
   target:
     - target: nsis
@@ -21,7 +21,7 @@ win:
         - x64
         - ia32
 nsis:
-  artifactName: ${productName}-${version}-setup.${ext}
+  artifactName: LiquidGlassTodoList-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
@@ -29,15 +29,22 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
 mac:
-  entitlementsInherit: build/entitlements.mac.plist
-  extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  artifactName: LiquidGlassTodoList-${version}-${arch}.${ext}
+  hardenedRuntime: false
+  gatekeeperAssess: false
   notarize: false
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: LiquidGlassTodoList-${version}-${arch}.${ext}
 linux:
   target:
     - AppImage

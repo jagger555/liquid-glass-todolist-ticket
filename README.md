@@ -1,6 +1,6 @@
 # Liquid Glass TodoList Ticket
 
-一个基于 Electron + Vue 3 + TypeScript 的桌面 TodoList 小工具。界面采用高透明液态玻璃风格，适合常驻桌面记录待办、拆分子任务，并在需要时切换为鼠标穿透的桌面小组件。
+一个基于 Electron + Vue 3 + TypeScript 的桌面 TodoList 小工具。界面采用高透明液态玻璃风格，适合在 Windows 和 macOS 桌面常驻记录待办、拆分子任务，并在需要时切换为鼠标穿透的桌面小组件。
 
 ## 功能特性
 
@@ -30,13 +30,15 @@ macOS 下 `Ctrl` 可替换为 `Command`。
 
 ## 下载使用
 
-Windows 用户可以在 GitHub Releases 页面下载最新安装包：
+可以在 GitHub Releases 页面下载对应系统的安装包：
 
 ```text
-便签TodoList-1.0.0-setup.exe
+LiquidGlassTodoList-1.0.0-setup.exe
+LiquidGlassTodoList-1.0.0-arm64.dmg
+LiquidGlassTodoList-1.0.0-x64.dmg
 ```
 
-下载后双击安装即可运行。当前安装包未做代码签名，Windows 可能提示“未知发布者”，这是未签名 Electron 应用的常见提示。
+Windows 下载 `.exe`，macOS 按芯片选择 `.dmg`：Apple Silicon 选择 `arm64`，Intel Mac 选择 `x64`。当前安装包未做代码签名，Windows 可能提示“未知发布者”，macOS 可能需要右键选择“打开”。
 
 ## 本地开发
 
@@ -86,7 +88,7 @@ electron-builder.yml    打包配置
 
 ## 说明
 
-本项目目前主要面向 Windows 桌面使用。透明窗口、鼠标穿透、底层显示等能力依赖 Electron 和系统窗口管理机制，不同 Windows 版本上的视觉表现可能略有差异。
+透明窗口、鼠标穿透、底层显示等能力依赖 Electron 和系统窗口管理机制，不同 Windows/macOS 版本上的视觉表现可能略有差异。macOS 版本已配置 Intel 和 Apple Silicon 双架构目标。
 
 ## License
 

@@ -1,10 +1,10 @@
 {
-  "name": "sticky-todolist",
+  "name": "liquid-glass-todolist-ticket",
   "version": "1.0.0",
-  "description": "一个美观的桌面便签TodoList应用",
+  "description": "A liquid glass desktop TodoList widget built with Electron and Vue.",
   "main": "./out/main/index.js",
-  "author": "zhangyu",
-  "homepage": "https://electron-vite.org",
+  "author": "jagger555",
+  "homepage": "https://github.com/jagger555/liquid-glass-todolist-ticket",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",

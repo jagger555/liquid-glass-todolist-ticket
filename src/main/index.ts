@@ -1,4 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, Menu, globalShortcut } from 'electron' // 导入 Electron 的核心模块
+import type { BrowserWindowConstructorOptions } from 'electron'
 import { join } from 'path' // 导入 Node.js 的 path 模块，用于路径拼接
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs' // 导入文件系统模块
 import { electronApp, optimizer, is } from '@electron-toolkit/utils' // 导入 electron-toolkit 的工具模块
@@ -15,6 +16,25 @@ import icon from '../../resources/icon.png?asset' // 导入应用的图标文件
  * @returns {void} 无返回值
  */
 function createWindow(): BrowserWindow {
+  const isMac = process.platform === 'darwin'
+  const isWindows = process.platform === 'win32'
+  const platformWindowOptions: BrowserWindowConstructorOptions = {
+    ...(isWindows
+      ? {
+          backgroundMaterial: 'none',
+          roundedCorners: true,
+          thickFrame: false,
+          titleBarOverlay: false
+        }
+      : {}),
+    ...(isMac
+      ? {
+          vibrancy: 'under-window',
+          visualEffectState: 'active'
+        }
+      : {})
+  }
+
   // 创建浏览器窗口实例 - 便签样式配置
   const mainWindow = new BrowserWindow({
     width: 350, // 便签宽度
@@ -27,20 +47,15 @@ function createWindow(): BrowserWindow {
     frame: false, // 无边框窗口
     transparent: true, // 透明背景
     backgroundColor: '#00000000',
-    backgroundMaterial: 'none',
-    roundedCorners: true,
-    thickFrame: false,
-    titleBarOverlay: false,
     hasShadow: false,
     title: '',
-    vibrancy: process.platform === 'darwin' ? 'under-window' : undefined,
-    visualEffectState: 'active',
+    ...platformWindowOptions,
     alwaysOnTop: false, // 默认不置顶，避免遮挡其他窗口
     resizable: true, // 可调整大小
     movable: true, // 可移动
     skipTaskbar: false, // 在任务栏显示
     autoHideMenuBar: true, // 自动隐藏菜单栏
-    ...(process.platform === 'linux' ? { icon } : {}), // 如果是 Linux 系统，设置窗口图标
+    ...(process.platform !== 'darwin' ? { icon } : {}), // macOS 应用图标由打包配置处理
     webPreferences: {
       // 配置 Web 内容的偏好设置
       preload: join(__dirname, '../preload/index.js'), // 设置预加载脚本路径
@@ -61,7 +76,7 @@ function createWindow(): BrowserWindow {
     mainWindow.setHasShadow(false)
     mainWindow.webContents.invalidate()
 
-    if (nudgeBounds && !isNudgingBounds) {
+    if (isWindows && nudgeBounds && !isNudgingBounds) {
       isNudgingBounds = true
       const bounds = mainWindow.getBounds()
       const widthDelta = bounds.width > 300 ? -1 : 1

@@ -1,0 +1,68 @@
+name: Build macOS installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: GitHub Release tag to upload assets to
+        required: true
+        default: v1.0.0
+      upload_release:
+        description: Upload generated files to the GitHub Release
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: false
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build macOS installers
+        run: |
+          pnpm run build
+          pnpm exec electron-builder --mac --x64 --arm64 --publish never
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installers
+          path: |
+            build-output/*.dmg
+            build-output/*.zip
+          if-no-files-found: error
+
+      - name: Upload assets to GitHub Release
+        if: ${{ inputs.upload_release }}
+        run: |
+          TAG="${{ inputs.tag }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" build-output/*.dmg build-output/*.zip --clobber
+          else
+            gh release create "$TAG" build-output/*.dmg build-output/*.zip \
+              --title "Liquid Glass TodoList Ticket ${TAG}" \
+              --notes "macOS installers for Liquid Glass TodoList Ticket."
+          fi

@@ -1,0 +1,246 @@
+# Electron Builder 完整配置文件示例
+# 这个文件展示了所有主要的配置选项和详细注释
+
+# ===== 基本应用信息 =====
+appId: com.example.myapp                    # 应用唯一标识符，用于应用商店和系统识别
+productName: "我的应用"                      # 应用显示名称
+copyright: "Copyright © 2024 ${author}"     # 版权信息
+description: "这是一个示例Electron应用"       # 应用描述
+
+# ===== 目录配置 =====
+directories:
+  buildResources: build                      # 构建资源目录（图标、安装程序资源等）
+  output: dist                              # 输出目录
+  app: .                                    # 应用源码目录
+
+# ===== 文件包含/排除 =====
+files:                                      # 要包含在应用中的文件
+  - "out/**/*"                             # 编译后的文件
+  - "node_modules/**/*"                    # 依赖包
+  - "package.json"                         # 包配置文件
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}"  # 排除文档
+  - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}"  # 排除测试文件
+  - "!**/node_modules/*.d.ts"              # 排除TypeScript定义文件
+  - "!**/node_modules/.bin"                # 排除二进制文件
+  - "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}"  # 排除各种临时文件
+  - "!.editorconfig"                       # 排除编辑器配置
+  - "!**/._*"                              # 排除macOS隐藏文件
+  - "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}"  # 排除版本控制文件
+  - "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}"  # 排除IDE和工具文件
+  - "!**/{appveyor.yml,.travis.yml,circle.yml}"  # 排除CI配置
+  - "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"  # 排除包管理器文件
+
+extraResources:                            # 额外资源文件（会被复制到resources目录）
+  - "assets/**"
+  - "data/**"
+
+extraFiles:                                # 额外文件（会被复制到应用根目录）
+  - "LICENSE"
+  - "README.md"
+
+# ===== 代码签名配置 =====
+forceCodeSigning: false                    # 是否强制代码签名
+electronDist: node_modules/electron/dist   # Electron分发目录
+electronVersion: "28.0.0"                 # 指定Electron版本
+
+# ===== 压缩配置 =====
+compression: maximum                       # 压缩级别：store, normal, maximum
+removePackageScripts: true                # 移除package.json中的scripts
+removePackageKeywords: true               # 移除package.json中的keywords
+buildDependenciesFromSource: false        # 是否从源码构建依赖
+
+# ===== 发布配置 =====
+publish:                                   # 发布配置
+  - provider: github                       # 发布到GitHub Releases
+    owner: myusername                      # GitHub用户名
+    repo: myrepo                          # 仓库名
+    private: false                        # 是否私有仓库
+    releaseType: release                  # 发布类型：release, prerelease, draft
+
+# ===== Windows 平台配置 =====
+win:
+  target:                                  # 构建目标
+    - target: nsis                         # NSIS安装程序
+      arch:                               # 支持的架构
+        - x64                             # 64位
+        - ia32                            # 32位
+    - target: portable                     # 便携版
+      arch: [x64]
+    - target: zip                         # ZIP压缩包
+      arch: [x64, ia32]
+
+  icon: build/icon.ico                     # Windows图标文件
+  requestedExecutionLevel: asInvoker       # 执行权限级别：asInvoker, highestAvailable, requireAdministrator
+  signAndEditExecutable: true              # 是否签名和编辑可执行文件
+  signDlls: false                         # 是否签名DLL文件
+  verifyUpdateCodeSignature: false        # 是否验证更新的代码签名
+
+  # 文件版本信息
+  fileAssociations:                       # 文件关联
+    - ext: myext                          # 文件扩展名
+      name: "My File Type"                # 文件类型名称
+      description: "My file description"   # 文件描述
+      icon: build/fileicon.ico            # 文件图标
+      role: Editor                        # 角色：Editor, Viewer, Shell, None
+
+  # 协议关联
+  protocols:                              # URL协议关联
+    - name: "my-protocol"                 # 协议名称
+      schemes: ["myapp"]                  # 协议方案
+
+# ===== NSIS 安装程序配置 =====
+nsis:
+  oneClick: false                         # 是否一键安装
+  allowElevation: true                    # 是否允许提升权限
+  allowToChangeInstallationDirectory: true  # 是否允许更改安装目录
+  installerIcon: build/installerIcon.ico  # 安装程序图标
+  uninstallerIcon: build/uninstallerIcon.ico  # 卸载程序图标
+  installerHeaderIcon: build/installerHeaderIcon.ico  # 安装程序头部图标
+  createDesktopShortcut: always           # 创建桌面快捷方式：always, never, ask
+  createStartMenuShortcut: true           # 创建开始菜单快捷方式
+  shortcutName: "我的应用"                 # 快捷方式名称
+  menuCategory: false                     # 开始菜单分类
+  runAfterFinish: true                    # 安装完成后运行
+  deleteAppDataOnUninstall: false        # 卸载时删除应用数据
+
+  # 安装程序语言
+  language: "2052"                        # 语言代码（2052=简体中文）
+
+  # 自定义安装脚本
+  include: build/installer.nsh            # 包含自定义NSIS脚本
+  script: build/installer.nsi             # 完整的NSIS脚本
+
+  # 安装程序外观
+  installerSidebar: build/installerSidebar.bmp    # 安装程序侧边栏图片
+  uninstallerSidebar: build/uninstallerSidebar.bmp # 卸载程序侧边栏图片
+  installerHeader: build/installerHeader.bmp       # 安装程序头部图片
+
+  # 文件名模板
+  artifactName: "${productName}-${version}-setup.${ext}"  # 安装包文件名
+
+# ===== macOS 平台配置 =====
+mac:
+  target:
+    - target: dmg                         # DMG磁盘镜像
+      arch: [x64, arm64]                  # 支持Intel和Apple Silicon
+    - target: zip                         # ZIP压缩包
+      arch: [x64, arm64]
+    - target: pkg                         # PKG安装包
+      arch: [x64]
+
+  icon: build/icon.icns                   # macOS图标文件
+  category: public.app-category.productivity  # 应用分类
+  darkModeSupport: true                   # 支持深色模式
+  hardenedRuntime: true                   # 启用强化运行时
+  gatekeeperAssess: false                 # 是否进行Gatekeeper评估
+  entitlements: build/entitlements.plist  # 权限配置文件
+  entitlementsInherit: build/entitlements.plist  # 继承的权限配置
+
+  # 代码签名
+  identity: "Developer ID Application: Your Name"  # 签名身份
+  provisioningProfile: build/embedded.provisionprofile  # 配置文件
+
+  # 文件关联
+  fileAssociations:
+    - ext: myext
+      name: "My File Type"
+      description: "My file description"
+      icon: build/fileicon.icns
+      role: Editor
+
+# ===== DMG 配置 =====
+dmg:
+  background: build/background.png        # DMG背景图片
+  backgroundColor: "#ffffff"              # 背景颜色
+  icon: build/volume.icns                 # 卷图标
+  iconSize: 80                           # 图标大小
+  iconTextSize: 12                       # 图标文字大小
+  title: "${productName} ${version}"      # DMG标题
+
+  # 窗口配置
+  window:
+    x: 400                                # 窗口X位置
+    y: 100                                # 窗口Y位置
+    width: 540                            # 窗口宽度
+    height: 380                           # 窗口高度
+
+  # 内容配置
+  contents:
+    - x: 130                              # 应用图标X位置
+      y: 220                              # 应用图标Y位置
+    - x: 410                              # Applications文件夹X位置
+      y: 220                              # Applications文件夹Y位置
+      type: link                          # 类型：link
+      path: /Applications                 # 链接路径
+
+# ===== Linux 平台配置 =====
+linux:
+  target:
+    - target: AppImage                    # AppImage格式
+      arch: [x64]
+    - target: deb                         # Debian包
+      arch: [x64, arm64]
+    - target: rpm                         # RPM包
+      arch: [x64]
+    - target: tar.gz                      # 压缩包
+      arch: [x64, arm64]
+
+  icon: build/icon.png                    # Linux图标文件
+  category: Office                        # 应用分类
+  description: "这是一个示例Electron应用"  # 应用描述
+  desktop:                               # 桌面文件配置
+    Name: "我的应用"
+    Comment: "应用描述"
+    Keywords: "electron;app"
+    StartupWMClass: "my-app"
+
+# ===== Debian 包配置 =====
+deb:
+  packageCategory: utils                  # 包分类
+  priority: optional                      # 优先级
+  depends:                               # 依赖包
+    - gconf2
+    - gconf-service
+    - libnotify4
+    - libappindicator1
+    - libxtst6
+    - libnss3
+  recommends:                            # 推荐包
+    - pulseaudio
+  suggests:                              # 建议包
+    - gvfs-bin
+
+# ===== RPM 包配置 =====
+rpm:
+  packageCategory: Applications/Office    # 包分类
+  license: MIT                           # 许可证
+  vendor: "Your Company"                 # 供应商
+  depends:                               # 依赖包
+    - libXScrnSaver
+
+# ===== AppImage 配置 =====
+appImage:
+  systemIntegration: ask                 # 系统集成：ask, doNotAsk
+  desktop:                               # 桌面集成
+    Exec: "myapp %U"
+    MimeType: "x-scheme-handler/myapp"
+
+# ===== 自动更新配置 =====
+electronUpdaterCompatibility: ">=2.16"   # 更新器兼容性版本
+
+# ===== 构建钩子 =====
+beforeBuild: scripts/beforeBuild.js      # 构建前脚本
+afterSign: scripts/afterSign.js          # 签名后脚本
+afterPack: scripts/afterPack.js          # 打包后脚本
+beforePack: scripts/beforePack.js        # 打包前脚本
+
+# ===== 元数据 =====
+buildVersion: "1.0.0"                    # 构建版本
+buildNumber: "100"                       # 构建号
+
+# ===== 其他配置 =====
+generateUpdatesFilesForAllChannels: true  # 为所有渠道生成更新文件
+releaseInfo:                             # 发布信息
+  releaseNotes: "版本更新说明"             # 更新说明
+  releaseName: "v1.0.0"                  # 发布名称
+  releaseDate: "2024-01-01"              # 发布日期

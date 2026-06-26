@@ -1,0 +1,119 @@
+# 便签TodoList应用的Electron Builder配置
+# 针对你的应用优化的配置文件
+
+# ===== 基本应用信息 =====
+appId: com.todolist.stickyapp             # 应用唯一标识符
+productName: 便签TodoList                  # 应用显示名称
+copyright: "Copyright © 2024"             # 版权信息
+description: "一个美观的桌面便签TodoList应用"  # 应用描述
+
+# ===== 目录配置 =====
+directories:
+  buildResources: build                    # 构建资源目录
+  output: dist                            # 输出目录
+
+# ===== 文件配置 =====
+files:
+  - "out/**/*"                           # 编译后的文件
+  - "node_modules/**/*"                  # 依赖包
+  - "package.json"                       # 包配置文件
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,readme.md,readme}"
+  - "!**/node_modules/*/{test,__tests__,tests,example,examples}"
+  - "!**/node_modules/*.d.ts"
+  - "!**/node_modules/.bin"
+  - "!**/*.{o,hprof,orig,pyc,pyo,rbc,swp}"
+  - "!**/{.DS_Store,.git,.gitignore}"
+  - "!**/{npm-debug.log,yarn.lock}"
+
+# ===== 基本配置 =====
+compression: normal                        # 压缩级别
+removePackageScripts: true               # 移除package.json中的scripts
+
+# ===== Windows 平台配置 =====
+win:
+  executableName: StickyTodoList          # 可执行文件名
+  icon: build/icon.ico                    # Windows图标（需要准备）
+  target:
+    - target: nsis                        # NSIS安装程序
+      arch:
+        - x64                             # 64位
+        - ia32                            # 32位
+    - target: portable                    # 便携版
+      arch: [x64]
+  
+  # 文件版本信息
+  requestedExecutionLevel: asInvoker      # 不需要管理员权限
+  sign: false                            # 暂时禁用代码签名
+
+# ===== NSIS 安装程序配置 =====
+nsis:
+  oneClick: false                         # 允许用户选择安装选项
+  allowElevation: true                    # 允许提升权限
+  allowToChangeInstallationDirectory: true  # 允许更改安装目录
+  createDesktopShortcut: always           # 总是创建桌面快捷方式
+  createStartMenuShortcut: true           # 创建开始菜单快捷方式
+  shortcutName: "便签TodoList"             # 快捷方式名称
+  runAfterFinish: true                    # 安装完成后运行
+  deleteAppDataOnUninstall: false        # 卸载时保留用户数据
+  
+  # 安装包文件名
+  artifactName: "${productName}-${version}-setup.${ext}"
+  
+  # 安装程序显示名称
+  displayName: "便签TodoList"
+  uninstallDisplayName: "便签TodoList"
+
+# ===== macOS 平台配置 =====
+mac:
+  icon: build/icon.icns                   # macOS图标（需要准备）
+  category: public.app-category.productivity  # 生产力工具分类
+  target:
+    - target: dmg                         # DMG磁盘镜像
+      arch: [x64, arm64]                  # 支持Intel和Apple Silicon
+    - target: zip                         # ZIP压缩包
+      arch: [x64, arm64]
+
+# ===== DMG 配置 =====
+dmg:
+  title: "${productName} ${version}"      # DMG标题
+  icon: build/volume.icns                 # 卷图标（可选）
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+# ===== Linux 平台配置 =====
+linux:
+  icon: build/icon.png                    # Linux图标（需要准备）
+  category: Office                        # 办公软件分类
+  target:
+    - target: AppImage                    # AppImage格式
+      arch: [x64]
+    - target: deb                         # Debian包
+      arch: [x64]
+    - target: rpm                         # RPM包
+      arch: [x64]
+
+# ===== 发布配置（可选） =====
+# publish:
+#   - provider: github
+#     owner: yourusername
+#     repo: sticky-todolist
+#     private: false
+
+# ===== 构建优化 =====
+buildDependenciesFromSource: false       # 不从源码构建依赖
+electronDist: node_modules/electron/dist # Electron分发目录
+
+# ===== 便签应用特定配置 =====
+# 由于是便签应用，通常用户希望：
+# 1. 快速启动 - 使用便携版或直接运行
+# 2. 小体积 - 启用压缩和文件排除
+# 3. 简单安装 - NSIS安装程序配置简单
+# 4. 数据保护 - 卸载时不删除用户数据

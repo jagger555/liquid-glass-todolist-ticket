@@ -30,6 +30,7 @@ nsis:
   allowToChangeInstallationDirectory: true
 mac:
   category: public.app-category.productivity
+  identity: '-'
   target:
     - target: dmg
       arch:
